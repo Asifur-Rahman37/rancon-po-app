@@ -1,0 +1,12 @@
+{
+  "name": "rancon-po-generator-server",
+  "version": "1.0.0",
+  "description": "Server for the Rancon PO Generator app — serves the app and stores shared data in data.json.",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
