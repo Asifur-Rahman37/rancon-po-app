@@ -14,7 +14,8 @@
   header h1{font-size:19px; margin:0; font-weight:600; letter-spacing:.3px;}
   header .sub{font-size:12px; color:#cdd8ea;}
   nav{display:flex; gap:6px; padding:10px 28px; background:#fff; border-bottom:1px solid var(--border); flex-wrap:wrap;}
-  nav button{background:none; border:none; padding:9px 16px; font-size:13.5px; cursor:pointer; color:var(--muted); border-radius:6px; font-weight:600;}
+  nav button{background:none; border:none; padding:9px 16px; font-size:13.5px; cursor:pointer; color:var(--muted); border-radius:6px; font-weight:600; display:inline-flex; align-items:center; gap:7px;}
+  nav button svg{flex-shrink:0;}
   nav button.active{background:var(--navy); color:#fff;}
   nav button.navbtn-restricted{filter:blur(0.45px); opacity:0.4; cursor:not-allowed; background:#f2f3f5;}
   nav button.navbtn-restricted::after{content:" 🔒"; filter:none;}
@@ -62,6 +63,7 @@
   .small-btn.danger{border-color:var(--danger); color:var(--danger);}
   .empty-msg{color:var(--muted); font-size:13px; padding:20px; text-align:center;}
   .badge-count{font-size:11px; background:var(--accent); color:#3a2c00; padding:1px 7px; border-radius:8px; margin-left:6px;}
+  .badge-count.badge-new{background:#fff; color:var(--danger); border:1.5px solid var(--danger); font-weight:700;}
   .toast{position:fixed; bottom:20px; right:20px; background:var(--navy); color:#fff; padding:12px 18px; border-radius:8px; font-size:13.5px; box-shadow:0 4px 14px rgba(0,0,0,.2); display:none; z-index:999;}
   .fixed-note{font-size:11.5px; color:var(--muted); margin-top:2px;}
 
@@ -144,18 +146,18 @@
 </header>
 
 <nav>
-  <button class="navbtn" data-tab="prcreate">🧴 New Purchase Requisition</button>
-  <button class="navbtn" data-tab="prlist">📦 Saved Purchase Requisitions <span id="prListCount" class="badge-count">0</span></button>
-  <button class="navbtn" data-tab="cscreate">📊 New CS</button>
-  <button class="navbtn" data-tab="cslist">📑 Saved CS <span id="csListCount" class="badge-count">0</span></button>
-  <button class="navbtn active" data-tab="create">➕ New PO</button>
-  <button class="navbtn" data-tab="list">📋 Saved POs <span id="listCount" class="badge-count">0</span></button>
-  <button class="navbtn" data-tab="reqcreate">🧾 New Payment Requisition</button>
-  <button class="navbtn" data-tab="reqlist">📄 Saved Requisitions <span id="reqListCount" class="badge-count">0</span></button>
-  <button class="navbtn" data-tab="masters">🗂 Master Data</button>
-  <button class="navbtn" data-tab="dashboard">📊 Dashboard</button>
-  <button class="navbtn" id="navUsersBtn" data-tab="users">👤 Manage Users</button>
-  <button class="navbtn" data-tab="backup">💾 Backup / Restore</button>
+  <button class="navbtn active" data-tab="dashboard"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="12" width="4" height="8"/><rect x="10" y="7" width="4" height="13"/><rect x="17" y="3" width="4" height="17"/></svg> Dashboard</button>
+  <button class="navbtn" data-tab="prcreate"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><line x1="12" y1="12" x2="12" y2="18"/><line x1="9" y1="15" x2="15" y2="15"/></svg> New Purchase Requisition</button>
+  <button class="navbtn" data-tab="prlist"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="4" width="20" height="5" rx="1"/><path d="M4 9v9a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9"/><line x1="10" y1="13" x2="14" y2="13"/></svg> Saved Purchase Requisitions <span id="prListCount" class="badge-count">0</span></button>
+  <button class="navbtn" data-tab="cscreate"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="3" x2="12" y2="21"/><path d="M5 7l-3 6a3 3 0 0 0 6 0z"/><path d="M19 7l-3 6a3 3 0 0 0 6 0z"/><line x1="5" y1="7" x2="19" y2="7"/><line x1="9" y1="21" x2="15" y2="21"/></svg> New CS</button>
+  <button class="navbtn" data-tab="cslist"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2"/><line x1="8" y1="8" x2="16" y2="8"/><line x1="8" y1="12" x2="16" y2="12"/><line x1="8" y1="16" x2="12" y2="16"/></svg> Saved CS <span id="csListCount" class="badge-count">0</span></button>
+  <button class="navbtn" data-tab="create"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg> New PO</button>
+  <button class="navbtn" data-tab="list"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/></svg> Saved POs <span id="listCount" class="badge-count">0</span></button>
+  <button class="navbtn" data-tab="reqcreate"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2h16v20l-3-2-3 2-3-2-3 2-3-2-1 2z"/><line x1="8" y1="7" x2="16" y2="7"/><line x1="8" y1="11" x2="16" y2="11"/></svg> New Payment Requisition</button>
+  <button class="navbtn" data-tab="reqlist"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg> Saved Requisitions <span id="reqListCount" class="badge-count">0</span></button>
+  <button class="navbtn" data-tab="masters"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg> Master Data</button>
+  <button class="navbtn" id="navUsersBtn" data-tab="users"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4 21v-1a8 8 0 0 1 16 0v1"/></svg> Manage Users</button>
+  <button class="navbtn" data-tab="backup"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 16.6A5 5 0 0 0 18 7h-1.3A7 7 0 1 0 4 15.7"/><polyline points="12 12 12 20"/><polyline points="9 17 12 20 15 17"/></svg> Backup / Restore</button>
 </nav>
 
 <main>
@@ -341,7 +343,7 @@
 </div>
 
 <!-- ============ CREATE TAB ============ -->
-<div id="tab-create" class="tabpane">
+<div id="tab-create" class="tabpane" style="display:none;">
 
   <div class="card">
     <h2>Order Details</h2>
@@ -440,19 +442,13 @@
   </div>
 
   <div class="card">
-    <h2>Source of Items <span class="hint">(from Comparative Statement)</span></h2>
-    <p class="hint">If a CS was done for this purchase, pull its items (and the recommended supplier's price) in directly — or use the option above, or skip both and enter items manually.</p>
+    <h2>Approved Suppliers <span class="hint">(from CS recommendations)</span></h2>
+    <p class="hint">Reference only — whenever a CS is saved with a recommended supplier, it's remembered here per product. Look it up while filling in items below; nothing loads automatically.</p>
     <div class="field">
-      <label>Search saved Comparative Statements</label>
-      <input id="po_csSearch" placeholder="Type to filter..." oninput="renderPoCsPicker()">
+      <label>Search by product</label>
+      <input id="po_approvedSupplierSearch" placeholder="Type a product name..." oninput="renderApprovedSuppliersLookup('po_approvedSupplierSearch','po_approvedSupplierList')">
     </div>
-    <label style="display:flex; align-items:center; gap:6px; font-size:12.5px; color:var(--muted); margin:4px 0;">
-      <input type="checkbox" id="po_showCompletedCs" style="width:auto;" onchange="renderPoCsPicker()"> Also show CS already fully ordered
-    </label>
-    <div id="po_csPickerList" style="max-height:180px; overflow-y:auto; border:1px solid var(--border); border-radius:6px; padding:8px; margin-top:6px;"></div>
-    <div class="row-actions">
-      <button class="btn btn-outline" onclick="loadItemsFromSelectedCs()">⬇ Load Items From Selected CS</button>
-    </div>
+    <div id="po_approvedSupplierList" style="max-height:180px; overflow-y:auto; border:1px solid var(--border); border-radius:6px; padding:8px; margin-top:6px;"></div>
   </div>
 
   <div class="card">
@@ -801,6 +797,15 @@
   </div>
 
   <div class="card">
+    <h2>Approved Suppliers <span class="badge-count" id="approvedSupplierCount">0</span></h2>
+    <p class="hint">Learned automatically each time a CS is saved with a recommended supplier — one entry per product, always reflecting the most recent CS recommendation. Referenced (read-only) while creating a new PO.</p>
+    <table class="list" id="approvedSupplierTable">
+      <thead><tr><th>Product Name</th><th>Description</th><th>Approved Supplier</th><th>From CS</th><th>Date</th><th></th></tr></thead>
+      <tbody id="approvedSupplierBody"></tbody>
+    </table>
+  </div>
+
+  <div class="card">
     <h2>Suppliers <span class="badge-count" id="supplierCount">0</span></h2>
     <table class="list" id="supplierTable">
       <thead><tr><th>Name</th><th>Address</th><th>Contact</th><th>Phone</th><th>Email</th><th></th></tr></thead>
@@ -897,7 +902,7 @@
 <datalist id="unitsDataList"></datalist>
 
 <!-- ============ DASHBOARD TAB ============ -->
-<div id="tab-dashboard" class="tabpane" style="display:none;">
+<div id="tab-dashboard" class="tabpane">
   <div id="dashboardContent"></div>
 </div>
 
@@ -907,7 +912,7 @@
     <h2>Manage Users</h2>
     <p class="hint">Only an admin account can create or remove user IDs. Anyone you add here can use the app fully, but only admins can see this page.</p>
     <table class="list" id="userTable">
-      <thead><tr><th>Username</th><th>Role</th><th>Created</th><th></th></tr></thead>
+      <thead><tr><th>Username</th><th>Role</th><th>Status</th><th>Created</th><th></th></tr></thead>
       <tbody id="userTableBody"></tbody>
     </table>
   </div>
@@ -921,7 +926,7 @@
         <label><input type="checkbox" id="newUserIsAdmin" style="width:auto; margin-right:6px;">Also make this user an admin</label>
       </div>
     </div>
-    <p class="hint">Permissions below only apply to staff accounts — admins always have full access to everything, including this Manage Users page.</p>
+    <p class="hint">Permissions below only apply to colleague accounts — admins always have full access to everything, including this Manage Users page.</p>
     <div class="grid2" id="newUserPermsGrid"></div>
     <p class="auth-error" id="newUserError"></p>
     <div class="row-actions">
@@ -933,10 +938,10 @@
     <div class="grid2">
       <div class="field">
         <label>Role</label>
-        <select id="editUserRole"><option value="staff">staff</option><option value="admin">admin</option></select>
+        <select id="editUserRole"><option value="staff">Colleague</option><option value="admin">Admin</option></select>
       </div>
     </div>
-    <p class="hint">Permissions below only apply while the role is "staff" — admins always have full access.</p>
+    <p class="hint">Permissions below only apply while the role is "Colleague" — admins always have full access.</p>
     <div class="grid2" id="editUserPermsGrid"></div>
     <p class="auth-error" id="editUserError"></p>
     <div class="row-actions">
@@ -1036,10 +1041,12 @@ function loadStore(){
       if(!data.docDefaults) data.docDefaults = defaultDocDefaults();
       if(!data.csList) data.csList = [];
       if(!data.csCriteria) data.csCriteria = seedCsCriteria();
+      if(!data.presence) data.presence = {};
+      if(!data.approvedSuppliers) data.approvedSuppliers = [];
       return data;
     }
   }catch(e){}
-  return {pos:[], suppliers: seedSuppliers(), locations: seedLocations(), products: [], requisitions: [], users: [], purchaseReqs: [], units: seedUnits(), companyProfile: defaultCompanyProfile(), docDefaults: defaultDocDefaults(), csList: [], csCriteria: seedCsCriteria(), settings: defaultPrintSettings()};
+  return {pos:[], suppliers: seedSuppliers(), locations: seedLocations(), products: [], requisitions: [], users: [], purchaseReqs: [], units: seedUnits(), companyProfile: defaultCompanyProfile(), docDefaults: defaultDocDefaults(), csList: [], csCriteria: seedCsCriteria(), presence: {}, approvedSuppliers: [], settings: defaultPrintSettings()};
 }
 function seedCsCriteria(){
   return ['Payment Terms','Payment Terms Mode','Delivery Terms','VAT & TAX','Warranty','Service Warranty','Replacement Warranty','Installation Fee','Reinstallation Fee','Monthly Subscription Fee','Minimum Agency Commission','Contact Name','Contact No.'];
@@ -1151,15 +1158,15 @@ document.querySelectorAll('.navbtn').forEach(btn=>{
     btn.classList.add('active');
     document.querySelectorAll('.tabpane').forEach(p=>p.style.display='none');
     document.getElementById('tab-'+btn.dataset.tab).style.display='block';
-    if(btn.dataset.tab==='list') renderList();
+    if(btn.dataset.tab==='list') { renderList(); markSeen('pos', STORE.pos.length); updateListCount(); }
     if(btn.dataset.tab==='masters') renderMasters();
-    if(btn.dataset.tab==='create') { renderPoPrPicker(); renderPoCsPicker(); }
+    if(btn.dataset.tab==='create') { renderPoPrPicker(); renderApprovedSuppliersLookup('po_approvedSupplierSearch','po_approvedSupplierList'); }
     if(btn.dataset.tab==='prcreate') { /* items/signatories seeded at init */ }
-    if(btn.dataset.tab==='prlist') renderPrList();
+    if(btn.dataset.tab==='prlist') { renderPrList(); markSeen('purchaseReqs', STORE.purchaseReqs.length); updatePrListCount(); }
     if(btn.dataset.tab==='cscreate') renderCsPrPicker();
-    if(btn.dataset.tab==='cslist') renderCsList();
+    if(btn.dataset.tab==='cslist') { renderCsList(); markSeen('csList', STORE.csList.length); updateCsListCount(); }
     if(btn.dataset.tab==='reqcreate') renderReqPoPicker();
-    if(btn.dataset.tab==='reqlist') renderReqList();
+    if(btn.dataset.tab==='reqlist') { renderReqList(); markSeen('requisitions', STORE.requisitions.length); updateReqListCount(); }
     if(btn.dataset.tab==='dashboard') renderDashboard();
     if(btn.dataset.tab==='users') renderUserTable();
     if(btn.dataset.tab==='backup') renderSharedPanel();
@@ -1391,7 +1398,6 @@ function collectForm(){
     items,
     grandTotal: total,
     linkedPurchaseReqs: Array.from(poSelectedPrs),
-    linkedCs: Array.from(poSelectedCs),
     deliveryLocation: document.getElementById('deliveryLocation').value,
     deliveryContactPerson: document.getElementById('deliveryContactPerson').value,
     deliveryContactNo: document.getElementById('deliveryContactNo').value,
@@ -1429,8 +1435,6 @@ function fillForm(d){
   if(!d.items || d.items.length===0) addItemRow();
   poSelectedPrs = new Set(d.linkedPurchaseReqs||[]);
   renderPoPrPicker();
-  poSelectedCs = new Set(d.linkedCs||[]);
-  renderPoCsPicker();
   document.getElementById('deliveryLocation').value = d.deliveryLocation||'';
   document.getElementById('deliveryContactPerson').value = d.deliveryContactPerson||'';
   document.getElementById('deliveryContactNo').value = d.deliveryContactNo||'';
@@ -1480,7 +1484,7 @@ function clearForm(silent){
     addItemRow();
     recalcTotals();
     renderPoPrPicker();
-    renderPoCsPicker();
+    renderApprovedSuppliersLookup('po_approvedSupplierSearch','po_approvedSupplierList');
     const lastSigs = STORE.settings.lastPoSignatories;
     fillSignatories((lastSigs && lastSigs.length) ? lastSigs : defaultSignatories());
     applyCompanyAndDocDefaultsToForm();
@@ -1515,8 +1519,35 @@ function savePO(){
   updateListCount();
   toast('PO ' + d.poNo + ' saved');
 }
+/* ---- Seen/unseen badge tracking (per logged-in user, local to this browser) ---- */
+function getSeenCounts(){
+  try{ return JSON.parse(localStorage.getItem('rancon_seen_counts_'+currentUser)) || {}; }catch(e){ return {}; }
+}
+function setSeenCount(key, count){
+  const seen = getSeenCounts();
+  seen[key] = count;
+  localStorage.setItem('rancon_seen_counts_'+currentUser, JSON.stringify(seen));
+}
+function markSeen(key, totalCount){
+  setSeenCount(key, totalCount);
+}
+function updateUnseenBadge(elId, totalCount, seenKey){
+  const el = document.getElementById(elId);
+  if(!el) return;
+  const seen = getSeenCounts();
+  const seenCount = seen[seenKey] || 0;
+  const unseen = Math.max(0, totalCount - seenCount);
+  if(unseen > 0){
+    el.textContent = unseen;
+    el.style.display = '';
+    el.classList.add('badge-new');
+  }else{
+    el.style.display = 'none';
+    el.classList.remove('badge-new');
+  }
+}
 function updateListCount(){
-  document.getElementById('listCount').textContent = STORE.pos.length;
+  updateUnseenBadge('listCount', STORE.pos.length, 'pos');
 }
 function renderList(){
   const q = (document.getElementById('searchBox').value||'').toLowerCase();
@@ -1593,6 +1624,7 @@ function renderMasters(){
   loadDocDefaultsToForm();
   renderUnitsChips();
   renderCsCriteriaChips();
+  renderApprovedSuppliersMasterList();
 }
 function deleteSupplier(i){ STORE.suppliers.splice(i,1); saveStore(); refreshPickers(); refreshRqSupplierPicker(); renderMasters(); }
 function deleteLocation(i){ STORE.locations.splice(i,1); saveStore(); refreshPickers(); renderMasters(); }
@@ -2013,6 +2045,10 @@ function restoreBackup(){
       (data.csList||[]).forEach(c=>{
         const idx = STORE.csList.findIndex(x=>x.csRef===c.csRef);
         if(idx>=0) STORE.csList[idx]=c; else STORE.csList.push(c);
+      });
+      (data.approvedSuppliers||[]).forEach(a=>{
+        const idx = STORE.approvedSuppliers.findIndex(x=>x.productKey===a.productKey);
+        if(idx>=0) STORE.approvedSuppliers[idx]=a; else STORE.approvedSuppliers.push(a);
       });
       if(data.units && data.units.length){
         STORE.units = Array.from(new Set([...(STORE.units||[]), ...data.units]));
@@ -2452,7 +2488,7 @@ function saveRequisition(){
   toast('Requisition ' + d.billRef + ' saved');
 }
 function updateReqListCount(){
-  document.getElementById('reqListCount').textContent = STORE.requisitions.length;
+  updateUnseenBadge('reqListCount', STORE.requisitions.length, 'requisitions');
 }
 function renderReqList(){
   const q = (document.getElementById('rqSearchBox').value||'').toLowerCase();
@@ -2603,14 +2639,22 @@ function exportReqCSV(){
 
 /* ================= DASHBOARD ================= */
 function renderDashboard(){
-  const pos = STORE.pos, reqs = STORE.requisitions;
+  const prs = STORE.purchaseReqs, csList = STORE.csList, pos = STORE.pos, reqs = STORE.requisitions;
   const totalPOValue = pos.reduce((sum,p)=>sum+(p.grandTotal||0),0);
   const totalReqValue = reqs.reduce((sum,r)=>sum+(r.grandTotal||0),0);
 
   const linkedSet = new Set();
   reqs.forEach(r=>(r.linkedPOs||[]).forEach(po=>linkedSet.add(po)));
-  const posPending = pos.filter(p=>!linkedSet.has(p.poNo));
-  const pendingValue = posPending.reduce((sum,p)=>sum+(p.grandTotal||0),0);
+  const posPendingPayment = pos.filter(p=>!linkedSet.has(p.poNo));
+  const pendingPaymentValue = posPendingPayment.reduce((sum,p)=>sum+(p.grandTotal||0),0);
+
+  // Pipeline: how many PRs have been at least partially compared (CS) or ordered (PO)
+  const prsWithCs = new Set();
+  csList.forEach(cs=>(cs.linkedPurchaseReqs||[]).forEach(ref=>prsWithCs.add(ref)));
+  const prsWithPo = new Set();
+  pos.forEach(po=>(po.linkedPurchaseReqs||[]).forEach(ref=>prsWithPo.add(ref)));
+  const prsUntouched = prs.filter(pr=>!prsWithCs.has(pr.orderRef) && !prsWithPo.has(pr.orderRef));
+  const csWithoutRecommendation = csList.filter(cs=>!csRecommendedSupplierName(cs));
 
   function monthKey(dateStr){ return dateStr ? dateStr.slice(0,7) : 'Unknown'; }
 
@@ -2627,6 +2671,20 @@ function renderDashboard(){
     if(!monthlyReq[k]) monthlyReq[k] = {count:0, value:0};
     monthlyReq[k].count++;
     monthlyReq[k].value += (r.grandTotal||0);
+  });
+  const monthlyPr = {};
+  prs.forEach(p=>{
+    const k = monthKey(p.orderDate);
+    if(!monthlyPr[k]) monthlyPr[k] = {count:0, value:0};
+    monthlyPr[k].count++;
+    monthlyPr[k].value++; // count-based chart (PRs don't carry a monetary total)
+  });
+  const monthlyCs = {};
+  csList.forEach(c=>{
+    const k = monthKey(c.csDate);
+    if(!monthlyCs[k]) monthlyCs[k] = {count:0, value:0};
+    monthlyCs[k].count++;
+    monthlyCs[k].value++; // count-based chart
   });
   const supplierStats = {};
   pos.forEach(p=>{
@@ -2653,33 +2711,56 @@ function renderDashboard(){
       productStats[key].count++;
     });
   });
+  const csWinStats = {};
+  csList.forEach(cs=>{
+    const name = csRecommendedSupplierName(cs);
+    if(!name) return;
+    if(!csWinStats[name]) csWinStats[name] = {count:0, value:0};
+    csWinStats[name].count++;
+    csWinStats[name].value++; // count-based ranking
+  });
 
   const kpiHtml = `
     <div class="kpi-grid">
-      <div class="kpi-card"><div class="kpi-label">Total POs</div><div class="kpi-value">${pos.length}</div><div class="kpi-sub">${totalPOValue.toLocaleString('en-BD')} BDT total</div></div>
-      <div class="kpi-card"><div class="kpi-label">Total Requisitions</div><div class="kpi-value">${reqs.length}</div><div class="kpi-sub">${totalReqValue.toLocaleString('en-BD')} BDT total</div></div>
+      <div class="kpi-card"><div class="kpi-label">Purchase Requisitions</div><div class="kpi-value">${prs.length}</div><div class="kpi-sub">${prsUntouched.length} not yet CS'd or ordered</div></div>
+      <div class="kpi-card"><div class="kpi-label">Comparative Statements</div><div class="kpi-value">${csList.length}</div><div class="kpi-sub">${csWithoutRecommendation.length} without a recommendation yet</div></div>
+      <div class="kpi-card"><div class="kpi-label">Purchase Orders</div><div class="kpi-value">${pos.length}</div><div class="kpi-sub">${totalPOValue.toLocaleString('en-BD')} BDT total</div></div>
+      <div class="kpi-card"><div class="kpi-label">Payment Requisitions</div><div class="kpi-value">${reqs.length}</div><div class="kpi-sub">${totalReqValue.toLocaleString('en-BD')} BDT total</div></div>
       <div class="kpi-card"><div class="kpi-label">Avg PO Value</div><div class="kpi-value">${pos.length? Math.round(totalPOValue/pos.length).toLocaleString('en-BD') : 0}</div><div class="kpi-sub">BDT per order</div></div>
-      <div class="kpi-card ${posPending.length?'warn':''}"><div class="kpi-label">Pending Requisition</div><div class="kpi-value">${posPending.length}</div><div class="kpi-sub">${pendingValue.toLocaleString('en-BD')} BDT not yet requisitioned</div></div>
+      <div class="kpi-card ${posPendingPayment.length?'warn':''}"><div class="kpi-label">Pending Payment</div><div class="kpi-value">${posPendingPayment.length}</div><div class="kpi-sub">${pendingPaymentValue.toLocaleString('en-BD')} BDT not yet requisitioned</div></div>
+      <div class="kpi-card"><div class="kpi-label">Approved Suppliers on File</div><div class="kpi-value">${STORE.approvedSuppliers.length}</div><div class="kpi-sub">products with a recommended supplier</div></div>
+      <div class="kpi-card"><div class="kpi-label">Payment Coverage</div><div class="kpi-value">${totalPOValue>0 ? Math.round((totalReqValue/totalPOValue)*100)+'%' : '—'}</div><div class="kpi-sub">of PO value requisitioned for payment</div></div>
     </div>
   `;
 
-  function buildBarChart(monthlyObj){
+  const pipelineHtml = `
+    <div class="kpi-grid">
+      <div class="kpi-card ${prsUntouched.length?'warn':''}"><div class="kpi-label">Awaiting Action</div><div class="kpi-value">${prsUntouched.length}</div><div class="kpi-sub">requisition(s) with no CS or PO started</div></div>
+      <div class="kpi-card ${csWithoutRecommendation.length?'warn':''}"><div class="kpi-label">CS Needing Decision</div><div class="kpi-value">${csWithoutRecommendation.length}</div><div class="kpi-sub">comparative statement(s) without a recommended supplier</div></div>
+      <div class="kpi-card ${posPendingPayment.length?'warn':''}"><div class="kpi-label">POs Awaiting Payment Req.</div><div class="kpi-value">${posPendingPayment.length}</div><div class="kpi-sub">${pendingPaymentValue.toLocaleString('en-BD')} BDT</div></div>
+    </div>
+  `;
+
+  function buildBarChart(monthlyObj, useCount){
     const keys = Object.keys(monthlyObj).sort();
-    if(!keys.length) return '<p class="hint">No data yet — add some POs to see this chart.</p>';
-    const maxVal = Math.max.apply(null, keys.map(k=>monthlyObj[k].value).concat([1]));
+    if(!keys.length) return '<p class="hint">No data yet.</p>';
+    const metric = k => useCount ? monthlyObj[k].count : monthlyObj[k].value;
+    const maxVal = Math.max.apply(null, keys.map(metric).concat([1]));
     const cols = keys.map(k=>{
       const v = monthlyObj[k];
-      const heightPct = Math.max(4, Math.round((v.value/maxVal)*100));
+      const m = metric(k);
+      const heightPct = Math.max(4, Math.round((m/maxVal)*100));
+      const label = useCount ? v.count : Math.round(v.value/1000)+'k';
       return `<div class="bar-col">
-        <div class="bar-val">${Math.round(v.value/1000)}k</div>
-        <div class="bar-fill" style="height:${heightPct}%;" title="${v.count} order(s), ${v.value.toLocaleString('en-BD')} BDT"></div>
-        <div class="bar-label">${k}<br>(${v.count})</div>
+        <div class="bar-val">${label}</div>
+        <div class="bar-fill" style="height:${heightPct}%;" title="${v.count} item(s)${useCount?'':(', '+v.value.toLocaleString('en-BD')+' BDT')}"></div>
+        <div class="bar-label">${k}${useCount?'':(' ('+v.count+')')}</div>
       </div>`;
     }).join('');
     return `<div class="bar-chart">${cols}</div>`;
   }
 
-  function buildRankList(statsObj, valueSuffix){
+  function buildRankList(statsObj, valueSuffix, useCount){
     const entries = Object.entries(statsObj).sort((a,b)=>b[1].value-a[1].value).slice(0,8);
     if(!entries.length) return '<p class="hint">No data yet.</p>';
     const maxVal = Math.max.apply(null, entries.map(e=>e[1].value).concat([1]));
@@ -2688,8 +2769,8 @@ function renderDashboard(){
       return `<tr>
         <td style="width:26%;">${name}</td>
         <td style="width:44%;"><div class="rank-bar-track"><div class="rank-bar-fill" style="width:${pct}%;"></div></div></td>
-        <td style="width:15%;" class="right">${v.value.toLocaleString('en-BD')} BDT</td>
-        <td style="width:15%;" class="right">${v.count} ${valueSuffix||'order(s)'}</td>
+        <td style="width:15%;" class="right">${useCount ? (v.count+' win(s)') : (v.value.toLocaleString('en-BD')+' BDT')}</td>
+        <td style="width:15%;" class="right">${useCount ? '' : (v.count+' '+(valueSuffix||'order(s)'))}</td>
       </tr>`;
     }).join('');
     return `<table class="rank-list">${rows}</table>`;
@@ -2728,10 +2809,20 @@ function renderDashboard(){
       insights.push({type:'', text: `Highest-spend month so far: ${topMonth[0]} with ${topMonth[1].value.toLocaleString('en-BD')} BDT across ${topMonth[1].count} PO(s).`});
     }
   }
-  if(posPending.length){
-    insights.push({type:'risk', text: `${posPending.length} PO(s) worth ${pendingValue.toLocaleString('en-BD')} BDT have no payment requisition linked yet — worth checking if any payments are overdue.`});
+  if(posPendingPayment.length){
+    insights.push({type:'risk', text: `${posPendingPayment.length} PO(s) worth ${pendingPaymentValue.toLocaleString('en-BD')} BDT have no payment requisition linked yet — worth checking if any payments are overdue.`});
   }else if(pos.length){
     insights.push({type:'good', text: `Every saved PO has at least one payment requisition linked to it — no backlog detected.`});
+  }
+  if(prsUntouched.length){
+    insights.push({type:'risk', text: `${prsUntouched.length} purchase requisition(s) haven't moved to a CS or PO yet — may be worth a follow-up.`});
+  }
+  if(csWithoutRecommendation.length){
+    insights.push({type:'risk', text: `${csWithoutRecommendation.length} Comparative Statement(s) are missing a recommended supplier — decisions still pending.`});
+  }
+  const topCsWinner = Object.entries(csWinStats).sort((a,b)=>b[1].count-a[1].count)[0];
+  if(topCsWinner){
+    insights.push({type:'', text: `${topCsWinner[0]} has been the recommended supplier in ${topCsWinner[1].count} Comparative Statement(s) — your most frequently chosen vendor in comparisons.`});
   }
   if(reqs.length && totalPOValue>0){
     const reqRatio = Math.round((totalReqValue/totalPOValue)*100);
@@ -2747,10 +2838,14 @@ function renderDashboard(){
 
   const html = `
     <div class="card"><h2>Overview</h2>${kpiHtml}</div>
+    <div class="card"><h2>Pipeline Status <span class="hint">(where things may be stuck)</span></h2>${pipelineHtml}</div>
     <div class="card"><h2>Insights</h2>${insightsHtml}</div>
     <div class="card"><h2>Month-wise PO Value <span class="hint">(bar label shows value in thousands BDT, count of POs below)</span></h2>${buildBarChart(monthlyPO)}</div>
     <div class="card"><h2>Month-wise Payment Requisition Value</h2>${buildBarChart(monthlyReq)}</div>
+    <div class="card"><h2>Month-wise Purchase Requisitions <span class="hint">(count)</span></h2>${buildBarChart(monthlyPr, true)}</div>
+    <div class="card"><h2>Month-wise Comparative Statements <span class="hint">(count)</span></h2>${buildBarChart(monthlyCs, true)}</div>
     <div class="card"><h2>Supplier-wise Orders <span class="hint">(top 8 by value)</span></h2>${buildRankList(supplierStats)}</div>
+    <div class="card"><h2>Most Recommended Suppliers <span class="hint">(from CS decisions)</span></h2>${buildRankList(csWinStats, '', true)}</div>
     <div class="card"><h2>Delivery Location-wise Orders <span class="hint">(top 8 by value)</span></h2>${buildRankList(locationStats)}</div>
     <div class="card"><h2>Top Ordered Products <span class="hint">(top 8 by value)</span></h2>${buildProductRankList()}</div>
   `;
@@ -2911,7 +3006,8 @@ function clearPrForm(silent){
     document.getElementById('pr_delivery').value='';
     document.getElementById('pr_nbNote').value = (STORE.docDefaults && STORE.docDefaults.prNbNote) || 'Requirement only for 30 days included safety stock.';
     addPrItemRow();
-    fillPrSignatories(defaultPrSignatories());
+    const lastPrSigs = STORE.settings.lastPrSignatories;
+    fillPrSignatories((lastPrSigs && lastPrSigs.length) ? lastPrSigs : defaultPrSignatories());
   }
 }
 
@@ -2921,12 +3017,13 @@ function savePurchaseReq(){
   if(!d.orderRef){ toast('Please enter an Order Ref before saving'); return; }
   const idx = STORE.purchaseReqs.findIndex(r=>r.orderRef===d.orderRef);
   if(idx>=0) STORE.purchaseReqs[idx]=d; else STORE.purchaseReqs.push(d);
+  STORE.settings.lastPrSignatories = d.signatories;
   saveStore();
   updatePrListCount();
   toast('Purchase Requisition ' + d.orderRef + ' saved');
 }
 function updatePrListCount(){
-  document.getElementById('prListCount').textContent = STORE.purchaseReqs.length;
+  updateUnseenBadge('prListCount', STORE.purchaseReqs.length, 'purchaseReqs');
 }
 function renderPrList(){
   const q = (document.getElementById('prSearchBox').value||'').toLowerCase();
@@ -3114,6 +3211,33 @@ function defaultCsSignatories(){
     {role:'Passed by', name:'Finance'},
     {role:'Approved by', name:'ED'}
   ];
+}
+
+/* Splits a signatory list into one row (<=4) or two centered rows (>4) for print.
+   When the second row has fewer entries than the first, blank slots are inserted
+   at its center so entries stay visually balanced (e.g. 5 total -> 3 + [blank,item,blank]... 
+   actually 3+2 with the 2 centered as [item, blank, item] across 3 slot-widths). */
+function splitSignatoriesForPrint(sigs){
+  const list = (sigs && sigs.length) ? sigs : [];
+  if(list.length <= 4) return [list];
+  const line1Count = Math.ceil(list.length/2);
+  const line2Count = list.length - line1Count;
+  const line1 = list.slice(0, line1Count);
+  const line2Items = list.slice(line1Count);
+  const gap = line1Count - line2Count;
+  let line2 = line2Items.slice();
+  if(gap > 0){
+    // insert `gap` blank slots at the center of line2 so it reads as centered under line1
+    const centerIdx = Math.ceil(line2.length/2);
+    for(let i=0; i<gap; i++){
+      line2.splice(centerIdx, 0, null);
+    }
+  }
+  return [line1, line2];
+}
+function sigBlockHtml(sig){
+  if(!sig) return '<div></div>';
+  return `<div>${sig.role||''}<br><b>${sig.name||''}</b></div>`;
 }
 
 let csSuppliers = [];
@@ -3392,7 +3516,8 @@ function clearCsForm(silent){
     renderCsItemsTable();
     renderCsCriteriaTable();
     renderCsPrPicker();
-    fillCsSignatories(defaultCsSignatories());
+    const lastCsSigs = STORE.settings.lastCsSignatories;
+    fillCsSignatories((lastCsSigs && lastCsSigs.length) ? lastCsSigs : defaultCsSignatories());
   }
 }
 
@@ -3402,12 +3527,14 @@ function saveCs(){
   if(!d.csRef){ toast('Please enter a CS Reference before saving'); return; }
   const idx = STORE.csList.findIndex(c=>c.csRef===d.csRef);
   if(idx>=0) STORE.csList[idx]=d; else STORE.csList.push(d);
+  STORE.settings.lastCsSignatories = d.signatories;
+  updateApprovedSuppliersFromCs(d);
   saveStore();
   updateCsListCount();
   toast('CS ' + d.csRef + ' saved');
 }
 function updateCsListCount(){
-  document.getElementById('csListCount').textContent = STORE.csList.length;
+  updateUnseenBadge('csListCount', STORE.csList.length, 'csList');
 }
 function csRecommendedSupplierName(d){
   if(d.recommendedSupplierIdx===undefined || d.recommendedSupplierIdx===null || d.recommendedSupplierIdx==='') return '';
@@ -3490,7 +3617,10 @@ function renderCsPrintSheet(d){
   </tr>` : '';
 
   const sigs = (d.signatories && d.signatories.length) ? d.signatories : defaultCsSignatories();
-  const sigHtml = sigs.map(sig=>`<div>${sig.role||''}<br><b>${sig.name||''}</b></div>`).join('');
+  const sigLines = splitSignatoriesForPrint(sigs);
+  const sigRowsHtml = sigLines.map((line,i)=>
+    `<div class="sig-row" style="margin-top:${i===0 ? (s.sigSpaceMm||15) : 20}mm;">${line.map(sigBlockHtml).join('')}</div>`
+  ).join('');
   const recName = csRecommendedSupplierName(d);
   const html = `
   <div class="po-sheet" style="transform:scale(${(s.scalePct||100)/100}); width:auto; min-width:${orientation==='landscape'?'980px':'760px'};">
@@ -3513,9 +3643,7 @@ function renderCsPrintSheet(d){
     </table>
     <p style="font-size:12px; margin:10px 0 2px;"><b>Recommendation &amp; Remarks:</b> ${d.recommendation||''}${recName?(' Recommended supplier: <b>'+recName+'</b>.'):''}</p>
     <p style="text-align:center; font-weight:bold; text-decoration:underline; margin:16px 0 6px; font-size:12.5px;">Department Approval:</p>
-    <div class="sig-row" style="margin-top:${s.sigSpaceMm||15}mm;">
-      ${sigHtml}
-    </div>
+    ${sigRowsHtml}
   </div>`;
   document.getElementById('printSheet').innerHTML = html;
 }
@@ -3538,87 +3666,63 @@ function exportCsCSV(){
   toast('CS CSV exported');
 }
 
-/* ---- Linking into New PO: Source of Items from CS ---- */
-let poSelectedCs = new Set();
-function getCsOrderStatus(csRef, excludePoNo){
-  const cs = STORE.csList.find(c=>c.csRef===csRef);
-  if(!cs || !(cs.items||[]).length) return {fullyDone:false, anyDone:false};
-  const targetMap = {};
-  cs.items.forEach(it=>{
-    const key = (it.productName||'')+'|'+(it.description||'');
-    targetMap[key] = (targetMap[key]||0) + (parseFloat(it.qty)||0);
-  });
-  const orderedMap = {};
-  STORE.pos.forEach(po=>{
-    if(excludePoNo && po.poNo===excludePoNo) return;
-    if(!(po.linkedCs||[]).includes(csRef)) return;
-    (po.items||[]).forEach(it=>{
-      const key = (it.code||'')+'|'+(it.desc||'');
-      orderedMap[key] = (orderedMap[key]||0) + (parseFloat(it.qty)||0);
-    });
-  });
-  let fullyDone = true;
-  let anyDone = false;
-  Object.keys(targetMap).forEach(key=>{
-    const orderedQty = orderedMap[key]||0;
-    if(orderedQty > 0) anyDone = true;
-    if(orderedQty < targetMap[key]) fullyDone = false;
-  });
-  return {fullyDone, anyDone};
+/* ---- Approved Suppliers database (product-wise, learned from CS recommendations) ---- */
+function approvedSupplierKey(productName, description){
+  return (productName||'')+'|'+(description||'');
 }
-function renderPoCsPicker(){
-  const q = (document.getElementById('po_csSearch').value||'').toLowerCase();
-  const showCompleted = document.getElementById('po_showCompletedCs').checked;
-  const currentPoNo = document.getElementById('poNo').value;
-  const wrap = document.getElementById('po_csPickerList');
-  wrap.innerHTML = '';
-  const filtered = STORE.csList.filter(cs=>{
-    const matchesSearch = !q || (cs.csRef||'').toLowerCase().includes(q) || (cs.itemTitle||'').toLowerCase().includes(q);
-    if(!matchesSearch) return false;
-    if(poSelectedCs.has(cs.csRef)) return true;
-    if(showCompleted) return true;
-    const status = getCsOrderStatus(cs.csRef, currentPoNo);
-    return !status.fullyDone;
-  });
-  if(!filtered.length){ wrap.innerHTML = '<div class="hint">No matching saved CS.</div>'; return; }
-  filtered.forEach(cs=>{
-    const status = getCsOrderStatus(cs.csRef, currentPoNo);
-    const badge = status.fullyDone
-      ? ' <span class="pill" style="background:#eef1f6; color:#6b7684;">Fully ordered</span>'
-      : (status.anyDone ? ' <span class="pill">Partially ordered</span>' : '');
-    const recName = csRecommendedSupplierName(cs);
-    const row = document.createElement('label');
-    row.style.display='flex'; row.style.gap='8px'; row.style.padding='4px 2px'; row.style.fontSize='13px'; row.style.alignItems='center';
-    row.innerHTML = `<input type="checkbox" value="${cs.csRef}" ${poSelectedCs.has(cs.csRef)?'checked':''} style="width:auto;" onchange="togglePoCs('${cs.csRef.replace(/'/g,"\\'")}', this.checked)">
-      <span><b>${cs.csRef}</b> — ${cs.itemTitle||''}${recName?(' — Recommended: '+recName):''}${badge}</span>`;
-    wrap.appendChild(row);
+function updateApprovedSuppliersFromCs(cs){
+  const recName = csRecommendedSupplierName(cs);
+  if(!recName) return; // no recommendation set on this CS, nothing to learn
+  (cs.items||[]).forEach(it=>{
+    if(!it.productName && !it.description) return;
+    const key = approvedSupplierKey(it.productName, it.description);
+    const idx = STORE.approvedSuppliers.findIndex(a=>a.productKey===key);
+    const entry = {
+      productKey: key,
+      productName: it.productName||'',
+      description: it.description||'',
+      supplier: recName,
+      csRef: cs.csRef,
+      date: cs.csDate||new Date().toISOString().slice(0,10)
+    };
+    if(idx>=0) STORE.approvedSuppliers[idx] = entry; else STORE.approvedSuppliers.push(entry);
   });
 }
-function togglePoCs(csRef, checked){
-  if(checked) poSelectedCs.add(csRef); else poSelectedCs.delete(csRef);
+function renderApprovedSuppliersLookup(searchInputId, listWrapId){
+  const searchEl = document.getElementById(searchInputId);
+  const wrap = document.getElementById(listWrapId);
+  if(!searchEl || !wrap) return;
+  const q = (searchEl.value||'').toLowerCase();
+  const filtered = STORE.approvedSuppliers.filter(a=>
+    !q || (a.productName||'').toLowerCase().includes(q) || (a.description||'').toLowerCase().includes(q)
+  ).sort((a,b)=>(b.date||'').localeCompare(a.date||''));
+  if(!filtered.length){ wrap.innerHTML = '<div class="hint">No approved suppliers recorded yet — these are learned automatically when a CS is saved with a recommended supplier.</div>'; return; }
+  wrap.innerHTML = filtered.map(a=>`
+    <div style="padding:5px 2px; font-size:13px; border-bottom:1px solid var(--border);">
+      <b>${a.productName||''}</b>${a.description?(' — '+a.description):''}<br>
+      <span style="color:#2e8b57; font-weight:600;">✓ ${a.supplier}</span>
+      <span class="hint">— from ${a.csRef||''}${a.date?(' ('+a.date+')'):''}</span>
+    </div>
+  `).join('');
 }
-function loadItemsFromSelectedCs(){
-  if(!poSelectedCs.size){ toast('Select at least one CS first'); return; }
-  const selectedCs = STORE.csList.filter(cs=>poSelectedCs.has(cs.csRef));
-  document.getElementById('itemsBody').innerHTML = '';
-  let supplierToFill = '';
-  selectedCs.forEach(cs=>{
-    const recIdx = (cs.recommendedSupplierIdx!==undefined && cs.recommendedSupplierIdx!=='') ? Number(cs.recommendedSupplierIdx) : null;
-    const recPrice = recIdx!==null ? null : null;
-    (cs.items||[]).forEach(it=>{
-      const rate = (recIdx!==null && it.prices && it.prices[recIdx]!==undefined) ? it.prices[recIdx] : '';
-      addItemRow({code: it.productName, desc: it.description, uom: it.uom||'', qty: it.qty, rate: rate});
-    });
-    if(!supplierToFill && recIdx!==null){
-      supplierToFill = csRecommendedSupplierName(cs);
-    }
-  });
-  if(!document.querySelectorAll('#itemsBody tr').length) addItemRow();
-  if(!document.getElementById('supplierName').value.trim() && supplierToFill){
-    document.getElementById('supplierName').value = supplierToFill;
-  }
-  recalcTotals();
-  toast('Items loaded from ' + selectedCs.length + ' CS — rates prefilled from the recommended supplier where available');
+function deleteApprovedSupplier(productKey){
+  STORE.approvedSuppliers = STORE.approvedSuppliers.filter(a=>a.productKey!==productKey);
+  saveStore();
+  renderApprovedSuppliersMasterList();
+}
+function renderApprovedSuppliersMasterList(){
+  const body = document.getElementById('approvedSupplierBody');
+  if(!body) return;
+  document.getElementById('approvedSupplierCount').textContent = STORE.approvedSuppliers.length;
+  body.innerHTML = STORE.approvedSuppliers.slice().sort((a,b)=>(b.date||'').localeCompare(a.date||''))
+    .map(a=>`<tr>
+      <td>${a.productName||''}</td>
+      <td>${a.description||''}</td>
+      <td>${a.supplier}</td>
+      <td>${a.csRef||''}</td>
+      <td>${a.date||''}</td>
+      <td><button class="small-btn danger" onclick="deleteApprovedSupplier('${a.productKey.replace(/'/g,"\\'")}')">Delete</button></td>
+    </tr>`).join('');
 }
 
 /* ================= SHARED DATA SYNC (multi-computer) ================= */
@@ -3757,6 +3861,13 @@ function mergeCollections(remoteArr, localArr, keyFn){
   (localArr||[]).forEach(item=>map.set(keyFn(item), item)); // local wins on same key
   return Array.from(map.values());
 }
+function mergePresence(remote, local){
+  const merged = Object.assign({}, remote||{});
+  Object.keys(local||{}).forEach(u=>{
+    merged[u] = Math.max(merged[u]||0, local[u]||0);
+  });
+  return merged;
+}
 function buildMergedPayload(remote){
   return {
     pos: mergeCollections(remote.pos, STORE.pos, p=>p.poNo),
@@ -3769,6 +3880,8 @@ function buildMergedPayload(remote){
     users: mergeCollections(remote.users, STORE.users, u=>u.username),
     units: Array.from(new Set([...(remote.units||[]), ...(STORE.units||[])])),
     csCriteria: Array.from(new Set([...(remote.csCriteria||[]), ...(STORE.csCriteria||[])])),
+    approvedSuppliers: mergeCollections(remote.approvedSuppliers, STORE.approvedSuppliers, a=>a.productKey),
+    presence: mergePresence(remote.presence, STORE.presence),
     companyProfile: Object.assign({}, remote.companyProfile||{}, STORE.companyProfile||{}),
     docDefaults: Object.assign({}, remote.docDefaults||{}, STORE.docDefaults||{})
   };
@@ -3784,6 +3897,8 @@ function applySyncPayload(payload){
   STORE.units = (payload.units && payload.units.length) ? payload.units : STORE.units;
   STORE.csList = payload.csList || STORE.csList;
   STORE.csCriteria = (payload.csCriteria && payload.csCriteria.length) ? payload.csCriteria : STORE.csCriteria;
+  STORE.approvedSuppliers = payload.approvedSuppliers || STORE.approvedSuppliers;
+  STORE.presence = payload.presence || STORE.presence;
   STORE.companyProfile = payload.companyProfile || STORE.companyProfile;
   STORE.docDefaults = payload.docDefaults || STORE.docDefaults;
   localStorage.setItem(STORE_KEY, JSON.stringify(STORE)); // local cache, print/signature settings stay per-computer
@@ -3804,7 +3919,7 @@ function refreshVisibleTabAfterSync(){
   if(tab==='reqlist') renderReqList();
   if(tab==='prlist') renderPrList();
   if(tab==='cslist') renderCsList();
-  if(tab==='create') { renderPoPrPicker(); renderPoCsPicker(); }
+  if(tab==='create') { renderPoPrPicker(); renderApprovedSuppliersLookup('po_approvedSupplierSearch','po_approvedSupplierList'); }
   if(tab==='cscreate') renderCsPrPicker();
   if(tab==='reqcreate') renderReqPoPicker();
   if(tab==='masters') renderMasters();
@@ -4109,13 +4224,19 @@ function checkExistingSession(){
   return false;
 }
 
+function roleLabel(role){
+  return role==='admin' ? 'Admin' : 'Colleague';
+}
 function onAuthenticated(){
   const user = findUser(currentUser);
   const badge = document.getElementById('userBadge');
   badge.style.display = 'flex';
-  badge.innerHTML = `${currentUser} <span class="role-tag ${user.role==='admin'?'admin':''}">${user.role}</span> <button onclick="handleLogout()">Log out</button>`;
+  badge.innerHTML = `${currentUser} <span class="role-tag ${user.role==='admin'?'admin':''}">${roleLabel(user.role)}</span> <button onclick="handleLogout()">Log out</button>`;
   document.getElementById('navUsersBtn').classList.toggle('navbtn-restricted', user.role!=='admin');
   applyPermissionsToUI();
+  renderDashboard();
+  updatePresence();
+  startPresenceHeartbeat();
 }
 function applyPermissionsToUI(){
   const perms = currentPerms();
@@ -4135,16 +4256,44 @@ function applyPermissionsToUI(){
 }
 
 /* ---- Manage Users ---- */
+const PRESENCE_ONLINE_WINDOW_MS = 90000; // consider "online" if seen within last 90s
+function isUserOnline(username){
+  const last = (STORE.presence||{})[username] || 0;
+  return (Date.now() - last) < PRESENCE_ONLINE_WINDOW_MS;
+}
+function presenceStatusHtml(username){
+  const online = isUserOnline(username);
+  return online
+    ? '<span style="display:inline-flex; align-items:center; gap:5px; color:#2e8b57; font-size:12px; font-weight:600;"><span style="width:8px; height:8px; border-radius:50%; background:#2e8b57; display:inline-block;"></span>Online</span>'
+    : '<span style="color:var(--muted); font-size:12px;">Offline</span>';
+}
+function updatePresence(){
+  if(!currentUser) return;
+  STORE.presence = STORE.presence || {};
+  STORE.presence[currentUser] = Date.now();
+  saveStore();
+}
+let presenceHeartbeatTimer = null;
+function startPresenceHeartbeat(){
+  stopPresenceHeartbeat();
+  presenceHeartbeatTimer = setInterval(updatePresence, 30000);
+}
+function stopPresenceHeartbeat(){
+  if(presenceHeartbeatTimer) clearInterval(presenceHeartbeatTimer);
+  presenceHeartbeatTimer = null;
+}
 function renderUserTable(){
   renderNewUserPermsCheckboxes();
   const body = document.getElementById('userTableBody');
+  const viewerIsAdmin = (findUser(currentUser)||{}).role==='admin';
   body.innerHTML = '';
   STORE.users.forEach((u,i)=>{
     const tr = document.createElement('tr');
     const isSelf = u.username===currentUser;
     const isLastAdmin = u.role==='admin' && STORE.users.filter(x=>x.role==='admin').length<=1;
     tr.innerHTML = `<td>${u.username}${isSelf?' <span class="hint">(you)</span>':''}</td>
-      <td><span class="role-tag ${u.role==='admin'?'admin':''}">${u.role}</span></td>
+      <td><span class="role-tag ${u.role==='admin'?'admin':''}">${roleLabel(u.role)}</span></td>
+      <td>${viewerIsAdmin ? presenceStatusHtml(u.username) : ''}</td>
       <td>${u.createdAt||''}</td>
       <td>
         <button class="small-btn" onclick="openEditUser('${u.username.replace(/'/g,"\\'")}')">Edit Access</button>
@@ -4258,7 +4407,7 @@ function init(){
   updateListCount();
   loadPrintSettingsToForm();
   renderPoPrPicker();
-  renderPoCsPicker();
+  renderApprovedSuppliersLookup('po_approvedSupplierSearch','po_approvedSupplierList');
   refreshRqSupplierPicker();
   document.getElementById('rq_billDate').value = new Date().toISOString().slice(0,10);
   document.getElementById('rq_rateLabel').value = (STORE.docDefaults && STORE.docDefaults.rqRateLabel) || 'Rate/Ltr';
@@ -4278,7 +4427,8 @@ function init(){
   document.getElementById('pr_orderDate').value = new Date().toISOString().slice(0,10);
   document.getElementById('pr_nbNote').value = (STORE.docDefaults && STORE.docDefaults.prNbNote) || 'Requirement only for 30 days included safety stock.';
   addPrItemRow();
-  fillPrSignatories(defaultPrSignatories());
+  const lastPrSigs = STORE.settings.lastPrSignatories;
+  fillPrSignatories((lastPrSigs && lastPrSigs.length) ? lastPrSigs : defaultPrSignatories());
   updatePrListCount();
   document.getElementById('cs_date').value = new Date().toISOString().slice(0,10);
   document.getElementById('cs_department').value = 'Supply Chain Department';
@@ -4287,7 +4437,8 @@ function init(){
   renderCsItemsTable();
   renderCsCriteriaTable();
   renderCsPrPicker();
-  fillCsSignatories(defaultCsSignatories());
+  const lastCsSigs = STORE.settings.lastCsSignatories;
+  fillCsSignatories((lastCsSigs && lastCsSigs.length) ? lastCsSigs : defaultCsSignatories());
   updateCsListCount();
   document.getElementById('dataStamp').textContent = 'Local data — ' + STORE.pos.length + ' PO(s), ' + STORE.requisitions.length + ' requisition(s), ' + STORE.purchaseReqs.length + ' purchase requisition(s), ' + STORE.csList.length + ' CS saved on this PC';
 }
