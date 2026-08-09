@@ -168,26 +168,34 @@
   <div class="card">
     <h2>Requisition Details</h2>
     <div class="grid2">
-      <div class="field"><label>Lubricant / Purchase Order Ref</label><input id="pr_orderRef" placeholder="e.g. RTBL/LUB/2026/JULY/01"></div>
+      <div class="field">
+        <label>Requisition Type</label>
+        <select id="pr_reqType" onchange="switchPrType()">
+          <option value="lubricant">Lubricants from Service</option>
+          <option value="general">General Items</option>
+          <option value="chassis">Chassis Body Building</option>
+        </select>
+      </div>
+      <div class="field"><label>Order Ref</label><input id="pr_orderRef" placeholder="e.g. RTBL/LUB/2026/JULY/01"></div>
       <div class="field"><label>Date Of Order</label><input id="pr_orderDate" type="date"></div>
       <div class="field" style="grid-column:1/2;"><label>Delivery</label><input id="pr_delivery" placeholder="e.g. Boliarpur 3S Center&CTG 3S"></div>
     </div>
   </div>
 
-  <div class="card">
-    <h2>Items</h2>
+  <div class="card" id="prLubricantCard">
+    <h2>Items <span class="hint">(Lubricants from Service)</span></h2>
     <table class="items" id="prItemsTable">
       <thead><tr>
         <th style="width:3%">SL</th>
         <th style="width:9%">Saved Product</th>
         <th style="width:13%">Product Name</th>
-        <th style="width:16%">Description</th>
+        <th style="width:15%">Description</th>
         <th style="width:8%">Pack Size</th>
         <th style="width:7%">Avg Monthly Sale</th>
         <th style="width:7%">Present Stock</th>
         <th style="width:8%">Order/Required Qty</th>
         <th style="width:5%">Order Qty</th>
-        <th style="width:7%">Order Unit</th>
+        <th style="width:7%">Unit</th>
         <th style="width:9%">Remarks</th>
         <th style="width:8%"></th>
       </tr></thead>
@@ -195,6 +203,43 @@
     </table>
     <div class="row-actions">
       <button class="btn btn-outline" onclick="addPrItemRow()">+ Add Item</button>
+    </div>
+  </div>
+
+  <div class="card" id="prGeneralCard" style="display:none;">
+    <h2>Items <span class="hint">(General Items)</span></h2>
+    <p class="hint">New item names not already in Master Data → Products are saved there automatically when you save this requisition.</p>
+    <table class="items" id="prGeneralTable">
+      <thead><tr>
+        <th style="width:5%">SL</th>
+        <th style="width:11%">Saved Item</th>
+        <th style="width:52%">Item Name</th>
+        <th style="width:12%">Unit</th>
+        <th style="width:12%">Required Qty</th>
+        <th style="width:8%"></th>
+      </tr></thead>
+      <tbody id="prGeneralBody"></tbody>
+    </table>
+    <div class="row-actions">
+      <button class="btn btn-outline" onclick="addGeneralItemRow()">+ Add Item</button>
+    </div>
+  </div>
+
+  <div class="card" id="prChassisCard" style="display:none;">
+    <h2>Items <span class="hint">(Chassis Body Building)</span></h2>
+    <table class="items" id="prChassisTable">
+      <thead><tr>
+        <th style="width:5%">SL</th>
+        <th style="width:42%">Body Building Description</th>
+        <th style="width:17%">Chassis No.</th>
+        <th style="width:17%">Engine No.</th>
+        <th style="width:11%">No. of Units</th>
+        <th style="width:8%"></th>
+      </tr></thead>
+      <tbody id="prChassisBody"></tbody>
+    </table>
+    <div class="row-actions">
+      <button class="btn btn-outline" onclick="addChassisItemRow()">+ Add Item</button>
     </div>
   </div>
 
@@ -2918,7 +2963,7 @@ function addPrItemRow(prefill){
     <td><input class="pr-it-stock" type="number" step="any" value="${prefill?(prefill.presentStock||''):''}"></td>
     <td><input class="pr-it-reqqty" type="number" step="any" value="${prefill?(prefill.requiredQty||''):''}"></td>
     <td><input class="pr-it-orderqty" type="number" step="any" value="${prefill?(prefill.orderQty||''):''}"></td>
-    <td><input class="pr-it-orderunit" list="unitsDataList" value="${prefill?(prefill.orderUnit||''):'Drum'}"></td>
+    <td><input class="pr-it-orderunit" list="unitsDataList" value="${prefill?(prefill.orderUnit||''):''}"></td>
     <td><input class="pr-it-remarks" value="${prefill?(prefill.remarks||''):''}"></td>
     <td>
       <button class="small-btn" title="Save this as a product" onclick="savePrRowAsProduct('${id}')">💾</button>
@@ -2930,6 +2975,86 @@ function addPrItemRow(prefill){
 function removePrItemRow(id){
   document.getElementById(id).remove();
   document.querySelectorAll('#prItemsBody tr').forEach((tr,i)=>{ tr.querySelector('td').textContent = i+1; });
+}
+
+/* ---- Requisition Type switching ---- */
+function switchPrType(){
+  const type = document.getElementById('pr_reqType').value;
+  document.getElementById('prLubricantCard').style.display = type==='lubricant' ? 'block' : 'none';
+  document.getElementById('prGeneralCard').style.display = type==='general' ? 'block' : 'none';
+  document.getElementById('prChassisCard').style.display = type==='chassis' ? 'block' : 'none';
+  if(type==='lubricant' && !document.querySelectorAll('#prItemsBody tr').length) addPrItemRow();
+  if(type==='general' && !document.querySelectorAll('#prGeneralBody tr').length) addGeneralItemRow();
+  if(type==='chassis' && !document.querySelectorAll('#prChassisBody tr').length) addChassisItemRow();
+}
+
+/* ---- General Items rows ---- */
+let generalItemRowCounter = 0;
+function buildGeneralProductOptions(){
+  let opts = '<select class="gen-it-product" onchange="applyProductPickToGeneral(this)"><option value="">-- pick --</option>';
+  STORE.products.forEach((p,i)=>{
+    opts += `<option value="${i}">${p.code||p.desc||''}</option>`;
+  });
+  opts += '</select>';
+  return opts;
+}
+function applyProductPickToGeneral(sel){
+  const idx = sel.value;
+  if(idx==='') return;
+  const p = STORE.products[idx];
+  const tr = sel.closest('tr');
+  tr.querySelector('.gen-it-name').value = p.code || p.desc || '';
+  if(p.uom) tr.querySelector('.gen-it-unit').value = p.uom;
+}
+function refreshAllGeneralProductPickers(){
+  document.querySelectorAll('#prGeneralBody tr').forEach(tr=>{
+    const oldSelect = tr.querySelector('.gen-it-product');
+    if(!oldSelect) return;
+    const wrapper = document.createElement('div');
+    wrapper.innerHTML = buildGeneralProductOptions();
+    oldSelect.replaceWith(wrapper.firstChild);
+  });
+}
+function addGeneralItemRow(prefill){
+  generalItemRowCounter++;
+  const id = 'genrow'+generalItemRowCounter;
+  const tr = document.createElement('tr');
+  tr.id = id;
+  tr.innerHTML = `
+    <td class="center">${document.querySelectorAll('#prGeneralBody tr').length+1}</td>
+    <td>${buildGeneralProductOptions()}</td>
+    <td><input class="gen-it-name" value="${prefill?(prefill.itemName||''):''}"></td>
+    <td><input class="gen-it-unit" list="unitsDataList" value="${prefill?(prefill.unit||''):''}"></td>
+    <td><input class="gen-it-qty" type="number" step="any" value="${prefill?(prefill.requiredQty||''):''}"></td>
+    <td><button class="small-btn danger" onclick="removeGeneralItemRow('${id}')">✕</button></td>
+  `;
+  document.getElementById('prGeneralBody').appendChild(tr);
+}
+function removeGeneralItemRow(id){
+  document.getElementById(id).remove();
+  document.querySelectorAll('#prGeneralBody tr').forEach((tr,i)=>{ tr.querySelector('td').textContent = i+1; });
+}
+
+/* ---- Chassis Body Building rows ---- */
+let chassisItemRowCounter = 0;
+function addChassisItemRow(prefill){
+  chassisItemRowCounter++;
+  const id = 'chrow'+chassisItemRowCounter;
+  const tr = document.createElement('tr');
+  tr.id = id;
+  tr.innerHTML = `
+    <td class="center">${document.querySelectorAll('#prChassisBody tr').length+1}</td>
+    <td><textarea class="ch-it-desc">${prefill?(prefill.bodyBuildingDesc||''):''}</textarea></td>
+    <td><input class="ch-it-chassis" value="${prefill?(prefill.chassisNo||''):''}"></td>
+    <td><input class="ch-it-engine" value="${prefill?(prefill.engineNo||''):''}"></td>
+    <td><input class="ch-it-units" type="number" step="any" value="${prefill?(prefill.noOfUnits||''):''}"></td>
+    <td><button class="small-btn danger" onclick="removeChassisItemRow('${id}')">✕</button></td>
+  `;
+  document.getElementById('prChassisBody').appendChild(tr);
+}
+function removeChassisItemRow(id){
+  document.getElementById(id).remove();
+  document.querySelectorAll('#prChassisBody tr').forEach((tr,i)=>{ tr.querySelector('td').textContent = i+1; });
 }
 
 /* ---- Signatory rows ---- */
@@ -2964,21 +3089,42 @@ function fillPrSignatories(sigs){
 
 /* ---- Collect / Fill / Clear ---- */
 function collectPrForm(){
-  const items = [];
-  document.querySelectorAll('#prItemsBody tr').forEach(tr=>{
-    items.push({
-      productName: tr.querySelector('.pr-it-name').value,
-      description: tr.querySelector('.pr-it-desc').value,
-      packSizeSpec: tr.querySelector('.pr-it-pack').value,
-      avgMonthlySale: tr.querySelector('.pr-it-avg').value,
-      presentStock: tr.querySelector('.pr-it-stock').value,
-      requiredQty: tr.querySelector('.pr-it-reqqty').value,
-      orderQty: tr.querySelector('.pr-it-orderqty').value,
-      orderUnit: tr.querySelector('.pr-it-orderunit').value,
-      remarks: tr.querySelector('.pr-it-remarks').value
+  const reqType = document.getElementById('pr_reqType').value;
+  let items = [];
+  if(reqType==='general'){
+    document.querySelectorAll('#prGeneralBody tr').forEach(tr=>{
+      items.push({
+        itemName: tr.querySelector('.gen-it-name').value,
+        unit: tr.querySelector('.gen-it-unit').value,
+        requiredQty: tr.querySelector('.gen-it-qty').value
+      });
     });
-  });
+  }else if(reqType==='chassis'){
+    document.querySelectorAll('#prChassisBody tr').forEach(tr=>{
+      items.push({
+        bodyBuildingDesc: tr.querySelector('.ch-it-desc').value,
+        chassisNo: tr.querySelector('.ch-it-chassis').value,
+        engineNo: tr.querySelector('.ch-it-engine').value,
+        noOfUnits: tr.querySelector('.ch-it-units').value
+      });
+    });
+  }else{
+    document.querySelectorAll('#prItemsBody tr').forEach(tr=>{
+      items.push({
+        productName: tr.querySelector('.pr-it-name').value,
+        description: tr.querySelector('.pr-it-desc').value,
+        packSizeSpec: tr.querySelector('.pr-it-pack').value,
+        avgMonthlySale: tr.querySelector('.pr-it-avg').value,
+        presentStock: tr.querySelector('.pr-it-stock').value,
+        requiredQty: tr.querySelector('.pr-it-reqqty').value,
+        orderQty: tr.querySelector('.pr-it-orderqty').value,
+        orderUnit: tr.querySelector('.pr-it-orderunit').value,
+        remarks: tr.querySelector('.pr-it-remarks').value
+      });
+    });
+  }
   return {
+    reqType,
     orderRef: document.getElementById('pr_orderRef').value,
     orderDate: document.getElementById('pr_orderDate').value,
     delivery: document.getElementById('pr_delivery').value,
@@ -2989,37 +3135,68 @@ function collectPrForm(){
 }
 function fillPrForm(d){
   clearPrForm(true);
+  const reqType = d.reqType || 'lubricant';
+  document.getElementById('pr_reqType').value = reqType;
+  switchPrType();
   document.getElementById('pr_orderRef').value = d.orderRef||'';
   document.getElementById('pr_orderDate').value = d.orderDate||'';
   document.getElementById('pr_delivery').value = d.delivery||'';
   document.getElementById('pr_nbNote').value = d.nbNote||'';
   document.getElementById('prItemsBody').innerHTML = '';
-  (d.items||[]).forEach(it=>addPrItemRow(it));
-  if(!d.items || !d.items.length) addPrItemRow();
+  document.getElementById('prGeneralBody').innerHTML = '';
+  document.getElementById('prChassisBody').innerHTML = '';
+  if(reqType==='general'){
+    (d.items||[]).forEach(it=>addGeneralItemRow(it));
+    if(!d.items || !d.items.length) addGeneralItemRow();
+  }else if(reqType==='chassis'){
+    (d.items||[]).forEach(it=>addChassisItemRow(it));
+    if(!d.items || !d.items.length) addChassisItemRow();
+  }else{
+    (d.items||[]).forEach(it=>addPrItemRow(it));
+    if(!d.items || !d.items.length) addPrItemRow();
+  }
   fillPrSignatories(d.signatories);
 }
 function clearPrForm(silent){
   document.getElementById('pr_orderRef').value='';
   document.getElementById('prItemsBody').innerHTML='';
+  document.getElementById('prGeneralBody').innerHTML='';
+  document.getElementById('prChassisBody').innerHTML='';
   if(!silent){
+    document.getElementById('pr_reqType').value = 'lubricant';
+    switchPrType();
     document.getElementById('pr_orderDate').value = new Date().toISOString().slice(0,10);
     document.getElementById('pr_delivery').value='';
     document.getElementById('pr_nbNote').value = (STORE.docDefaults && STORE.docDefaults.prNbNote) || 'Requirement only for 30 days included safety stock.';
-    addPrItemRow();
     const lastPrSigs = STORE.settings.lastPrSignatories;
     fillPrSignatories((lastPrSigs && lastPrSigs.length) ? lastPrSigs : defaultPrSignatories());
   }
 }
 
 /* ---- Save / List ---- */
+function saveNewGeneralItemsToMasterData(d){
+  if(d.reqType!=='general') return;
+  (d.items||[]).forEach(it=>{
+    const name = (it.itemName||'').trim();
+    if(!name) return;
+    const exists = STORE.products.some(p=>(p.code||'').toLowerCase()===name.toLowerCase());
+    if(!exists){
+      STORE.products.push({code:name, desc:'', uom:it.unit||'', rate:''});
+    }
+  });
+}
 function savePurchaseReq(){
   const d = collectPrForm();
   if(!d.orderRef){ toast('Please enter an Order Ref before saving'); return; }
   const idx = STORE.purchaseReqs.findIndex(r=>r.orderRef===d.orderRef);
   if(idx>=0) STORE.purchaseReqs[idx]=d; else STORE.purchaseReqs.push(d);
   STORE.settings.lastPrSignatories = d.signatories;
+  saveNewGeneralItemsToMasterData(d);
   saveStore();
   updatePrListCount();
+  refreshAllProductPickers();
+  refreshAllPrProductPickers();
+  refreshAllGeneralProductPickers();
   toast('Purchase Requisition ' + d.orderRef + ' saved');
 }
 function updatePrListCount(){
@@ -3074,26 +3251,43 @@ function previewPurchaseReq(){
 function renderPurchaseReqPrintSheet(d){
   const s = STORE.settings || defaultPrintSettings();
   applyPageStyle();
-  const itemsRows = (d.items||[]).map(it=>`<tr>
-    <td>${it.productName||''}</td>
-    <td>${it.description||''}</td>
-    <td class="center">${it.packSizeSpec||''}</td>
-    <td class="right">${it.avgMonthlySale||''}</td>
-    <td class="right">${it.presentStock||''}</td>
-    <td class="right">${it.requiredQty||''}</td>
-    <td class="center">${(it.orderQty||'')} ${it.orderUnit||''}</td>
-    <td>${it.remarks||''}</td>
-  </tr>`).join('');
-  const sigs = (d.signatories && d.signatories.length) ? d.signatories : defaultPrSignatories();
-  const sigHtml = sigs.map(sig=>`<div>${sig.role||''}<br><b>${sig.name||''}</b></div>`).join('');
-  const html = `
-  <div class="po-sheet" style="transform:scale(${(s.scalePct||100)/100});">
-    <h1>RANCON TRUCKS AND BUSES LTD</h1>
-    <table class="po-table" style="margin-top:8px;">
-      <tr><td class="lbl">Lubricant Order</td><td class="bold">${d.orderRef||''}</td><td class="lbl">Delivery</td><td class="bold">${d.delivery||''}</td></tr>
-      <tr><td class="lbl">Date Of Order</td><td colspan="3">${d.orderDate||''}</td></tr>
-    </table>
-    <table class="po-table po-items">
+  const reqType = d.reqType || 'lubricant';
+  let itemsTableHtml;
+  if(reqType==='general'){
+    const rows = (d.items||[]).map((it,i)=>`<tr>
+      <td class="center">${i+1}</td>
+      <td>${it.itemName||''}</td>
+      <td class="center">${it.unit||''}</td>
+      <td class="right">${it.requiredQty||''}</td>
+    </tr>`).join('');
+    itemsTableHtml = `<table class="po-table po-items">
+      <tr><th style="width:8%">SL</th><th style="width:60%">Item Name</th><th style="width:16%">Unit</th><th style="width:16%">Required Qty</th></tr>
+      ${rows}
+    </table>`;
+  }else if(reqType==='chassis'){
+    const rows = (d.items||[]).map((it,i)=>`<tr>
+      <td class="center">${i+1}</td>
+      <td>${it.bodyBuildingDesc||''}</td>
+      <td>${it.chassisNo||''}</td>
+      <td>${it.engineNo||''}</td>
+      <td class="right">${it.noOfUnits||''}</td>
+    </tr>`).join('');
+    itemsTableHtml = `<table class="po-table po-items">
+      <tr><th style="width:6%">SL</th><th style="width:42%">Body Building Description</th><th style="width:18%">Chassis No.</th><th style="width:18%">Engine No.</th><th style="width:16%">No. of Units</th></tr>
+      ${rows}
+    </table>`;
+  }else{
+    const rows = (d.items||[]).map(it=>`<tr>
+      <td>${it.productName||''}</td>
+      <td>${it.description||''}</td>
+      <td class="center">${it.packSizeSpec||''}</td>
+      <td class="right">${it.avgMonthlySale||''}</td>
+      <td class="right">${it.presentStock||''}</td>
+      <td class="right">${it.requiredQty||''}</td>
+      <td class="center">${(it.orderQty||'')} ${it.orderUnit||''}</td>
+      <td>${it.remarks||''}</td>
+    </tr>`).join('');
+    itemsTableHtml = `<table class="po-table po-items">
       <tr>
         <th style="width:14%">Product Name</th>
         <th style="width:20%">Description</th>
@@ -3101,11 +3295,22 @@ function renderPurchaseReqPrintSheet(d){
         <th style="width:9%">Average Sale Monthly</th>
         <th style="width:9%">Present Stock</th>
         <th style="width:11%">Order/Required Quantity</th>
-        <th style="width:10%">Pack Size</th>
+        <th style="width:10%">Unit</th>
         <th style="width:17%">Remarks</th>
       </tr>
-      ${itemsRows}
+      ${rows}
+    </table>`;
+  }
+  const sigs = (d.signatories && d.signatories.length) ? d.signatories : defaultPrSignatories();
+  const sigHtml = sigs.map(sig=>`<div>${sig.role||''}<br><b>${sig.name||''}</b></div>`).join('');
+  const html = `
+  <div class="po-sheet" style="transform:scale(${(s.scalePct||100)/100});">
+    <h1>RANCON TRUCKS AND BUSES LTD</h1>
+    <table class="po-table" style="margin-top:8px;">
+      <tr><td class="lbl">Order Ref</td><td class="bold">${d.orderRef||''}</td><td class="lbl">Delivery</td><td class="bold">${d.delivery||''}</td></tr>
+      <tr><td class="lbl">Date Of Order</td><td colspan="3">${d.orderDate||''}</td></tr>
     </table>
+    ${itemsTableHtml}
     <p style="font-size:11.5px; margin:8px 0;"><b>N.B:</b> ${d.nbNote||''}</p>
     <div class="sig-row" style="margin-top:${s.sigSpaceMm||15}mm;">
       ${sigHtml}
@@ -3117,11 +3322,18 @@ function renderPurchaseReqPrintSheet(d){
 /* ---- CSV export ---- */
 function exportPrCSV(){
   if(!STORE.purchaseReqs.length){ toast('No saved purchase requisitions to export'); return; }
-  const header = ['Order Ref','Order Date','Delivery','Product Name','Description','Pack Size','Avg Monthly Sale','Present Stock','Required Qty','Order Qty','Order Unit','Remarks'];
+  const header = ['Order Ref','Order Date','Delivery','Requisition Type','Product/Item Name','Description','Pack Size','Avg Monthly Sale','Present Stock','Required Qty','Order Qty','Order Unit','Remarks','Chassis No.','Engine No.','No. of Units'];
   const rows = [header];
   STORE.purchaseReqs.forEach(d=>{
+    const reqType = d.reqType || 'lubricant';
     (d.items||[]).forEach(it=>{
-      rows.push([d.orderRef, d.orderDate, d.delivery, it.productName, it.description, it.packSizeSpec, it.avgMonthlySale, it.presentStock, it.requiredQty, it.orderQty, it.orderUnit, it.remarks]);
+      if(reqType==='general'){
+        rows.push([d.orderRef, d.orderDate, d.delivery, 'General Items', it.itemName, '', '', '', '', it.requiredQty, '', it.unit, '', '', '', '']);
+      }else if(reqType==='chassis'){
+        rows.push([d.orderRef, d.orderDate, d.delivery, 'Chassis Body Building', '', it.bodyBuildingDesc, '', '', '', '', '', '', '', it.chassisNo, it.engineNo, it.noOfUnits]);
+      }else{
+        rows.push([d.orderRef, d.orderDate, d.delivery, 'Lubricants from Service', it.productName, it.description, it.packSizeSpec, it.avgMonthlySale, it.presentStock, it.requiredQty, it.orderQty, it.orderUnit, it.remarks, '', '', '']);
+      }
     });
   });
   const stamp = new Date().toISOString().slice(0,10);
@@ -3131,13 +3343,24 @@ function exportPrCSV(){
 
 /* ---- Linking into New PO: Source of Items from Purchase Requisition ---- */
 let poSelectedPrs = new Set();
+function prItemToPoFields(reqType, it){
+  if(reqType==='general'){
+    return {code: it.itemName||'', desc: '', uom: it.unit||'', qty: it.requiredQty||''};
+  }
+  if(reqType==='chassis'){
+    return {code: it.chassisNo||'', desc: (it.bodyBuildingDesc||'') + (it.engineNo?(' (Engine: '+it.engineNo+')'):''), uom:'Unit', qty: it.noOfUnits||''};
+  }
+  return {code: it.productName||'', desc: it.description||'', uom: it.orderUnit||'', qty: it.orderQty||''};
+}
 function getPrOrderStatus(orderRef, excludePoNo){
   const pr = STORE.purchaseReqs.find(r=>r.orderRef===orderRef);
   if(!pr || !(pr.items||[]).length) return {fullyDone:false, anyDone:false};
+  const reqType = pr.reqType || 'lubricant';
   const requiredMap = {};
   pr.items.forEach(it=>{
-    const key = (it.productName||'')+'|'+(it.description||'');
-    requiredMap[key] = (requiredMap[key]||0) + (parseFloat(it.orderQty)||0);
+    const f = prItemToPoFields(reqType, it);
+    const key = f.code+'|'+f.desc;
+    requiredMap[key] = (requiredMap[key]||0) + (parseFloat(f.qty)||0);
   });
   const orderedMap = {};
   STORE.pos.forEach(po=>{
@@ -3194,8 +3417,10 @@ function loadItemsFromSelectedPrs(){
   const selectedPrs = STORE.purchaseReqs.filter(pr=>poSelectedPrs.has(pr.orderRef));
   document.getElementById('itemsBody').innerHTML = '';
   selectedPrs.forEach(pr=>{
+    const reqType = pr.reqType || 'lubricant';
     (pr.items||[]).forEach(it=>{
-      addItemRow({code: it.productName, desc: it.description, uom: it.orderUnit||'', qty: it.orderQty, rate: ''});
+      const f = prItemToPoFields(reqType, it);
+      addItemRow({code: f.code, desc: f.desc, uom: f.uom, qty: f.qty, rate: ''});
     });
   });
   if(!document.querySelectorAll('#itemsBody tr').length) addItemRow();
@@ -3391,10 +3616,12 @@ function fillCsSignatories(sigs){
 function getPrCsStatus(orderRef, excludeCsRef){
   const pr = STORE.purchaseReqs.find(r=>r.orderRef===orderRef);
   if(!pr || !(pr.items||[]).length) return {fullyDone:false, anyDone:false};
+  const reqType = pr.reqType || 'lubricant';
   const requiredMap = {};
   pr.items.forEach(it=>{
-    const key = (it.productName||'')+'|'+(it.description||'');
-    requiredMap[key] = (requiredMap[key]||0) + (parseFloat(it.orderQty)||0);
+    const f = prItemToPoFields(reqType, it);
+    const key = f.code+'|'+f.desc;
+    requiredMap[key] = (requiredMap[key]||0) + (parseFloat(f.qty)||0);
   });
   const comparedMap = {};
   STORE.csList.forEach(cs=>{
@@ -3458,8 +3685,10 @@ function loadItemsFromSelectedPrsIntoCs(){
   const selectedPrs = STORE.purchaseReqs.filter(pr=>csSelectedPrs.has(pr.orderRef));
   csItemRows = [];
   selectedPrs.forEach(pr=>{
+    const reqType = pr.reqType || 'lubricant';
     (pr.items||[]).forEach(it=>{
-      csItemRows.push({productName: it.productName, description: it.description, qty: it.orderQty, uom: it.orderUnit, prices: csBlankRowValues()});
+      const f = prItemToPoFields(reqType, it);
+      csItemRows.push({productName: f.code, description: f.desc, qty: f.qty, uom: f.uom, prices: csBlankRowValues()});
     });
   });
   if(!csItemRows.length) csItemRows.push({productName:'', description:'', qty:'', uom:'', prices: csBlankRowValues()});
@@ -4426,7 +4655,8 @@ function init(){
   updateReqListCount();
   document.getElementById('pr_orderDate').value = new Date().toISOString().slice(0,10);
   document.getElementById('pr_nbNote').value = (STORE.docDefaults && STORE.docDefaults.prNbNote) || 'Requirement only for 30 days included safety stock.';
-  addPrItemRow();
+  document.getElementById('pr_reqType').value = 'lubricant';
+  switchPrType();
   const lastPrSigs = STORE.settings.lastPrSignatories;
   fillPrSignatories((lastPrSigs && lastPrSigs.length) ? lastPrSigs : defaultPrSignatories());
   updatePrListCount();
