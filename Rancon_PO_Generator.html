@@ -118,8 +118,8 @@
   .center{text-align:center;}
   .bold{font-weight:bold;}
   .po-items tr, .po-table tr{page-break-inside:avoid;}
-  .sig-row{display:flex; justify-content:space-between; flex-wrap:wrap; gap:14px 8px; margin-top:20px; page-break-inside:avoid;}
-  .sig-row div{min-width:100px;}
+  .sig-row{display:flex; justify-content:space-between; flex-wrap:wrap; gap:16px 12px; margin-top:20px; page-break-inside:avoid;}
+  .sig-row div{min-width:120px;}
   .sig-row div{text-align:center; font-size:12px;}
   .letterhead-spacer{width:100%;}
   @media print{
@@ -515,6 +515,20 @@
     <div class="row-actions">
       <button class="btn btn-outline" onclick="addItemRow()">+ Add Item</button>
     </div>
+
+    <h3 style="font-size:13.5px; margin:16px 0 8px;">Other Costs <span class="hint">(e.g. Installation, Transport — written in by hand)</span></h3>
+    <table class="items" id="otherCostsTable">
+      <thead><tr>
+        <th style="width:75%">Description</th>
+        <th style="width:17%">Amount</th>
+        <th style="width:8%"></th>
+      </tr></thead>
+      <tbody id="otherCostsBody"></tbody>
+    </table>
+    <div class="row-actions">
+      <button class="btn btn-outline" onclick="addOtherCostRow()">+ Add Other Cost</button>
+    </div>
+
     <div class="totals-box">
       <table>
         <tr><td class="label">Total Taka</td><td class="value" id="totalTaka">0</td></tr>
@@ -686,6 +700,20 @@
     <div class="row-actions">
       <button class="btn btn-outline" onclick="addRqItemRow()">+ Add Item</button>
     </div>
+
+    <h3 style="font-size:13.5px; margin:16px 0 8px;">Other Costs <span class="hint">(e.g. Installation, Transport — written in by hand)</span></h3>
+    <table class="items" id="rqOtherCostsTable">
+      <thead><tr>
+        <th style="width:75%">Description</th>
+        <th style="width:17%">Amount</th>
+        <th style="width:8%"></th>
+      </tr></thead>
+      <tbody id="rqOtherCostsBody"></tbody>
+    </table>
+    <div class="row-actions">
+      <button class="btn btn-outline" onclick="addRqOtherCostRow()">+ Add Other Cost</button>
+    </div>
+
     <div class="totals-box">
       <table><tr><td class="label">Total Taka</td><td class="value" id="rqTotalTaka">0</td></tr></table>
     </div>
@@ -1344,10 +1372,47 @@ function recalcTotals(){
     tr.querySelector('.it-total').textContent = amt.toLocaleString('en-BD',{maximumFractionDigits:2});
     total += amt;
   });
+  document.querySelectorAll('#otherCostsBody tr').forEach(tr=>{
+    const amt = parseFloat(tr.querySelector('.oc-amount').value) || 0;
+    total += amt;
+  });
   document.getElementById('totalTaka').textContent = total.toLocaleString('en-BD',{maximumFractionDigits:2});
   document.getElementById('grandTotal').textContent = total.toLocaleString('en-BD',{maximumFractionDigits:2});
   document.getElementById('totalWords').textContent = 'Total in words: ' + numToWords(total);
   return total;
+}
+
+/* ---- Other Cost rows ---- */
+let otherCostRowCounter = 0;
+function addOtherCostRow(prefill){
+  otherCostRowCounter++;
+  const id = 'ocrow'+otherCostRowCounter;
+  const tr = document.createElement('tr');
+  tr.id = id;
+  tr.innerHTML = `
+    <td><input class="oc-label" value="${prefill?(prefill.label||''):''}" placeholder="e.g. Installation with Transport"></td>
+    <td><input class="oc-amount" type="number" step="any" value="${prefill?(prefill.amount||''):''}" oninput="recalcTotals()"></td>
+    <td><button class="small-btn danger" onclick="removeOtherCostRow('${id}')">✕</button></td>
+  `;
+  document.getElementById('otherCostsBody').appendChild(tr);
+  recalcTotals();
+}
+function removeOtherCostRow(id){
+  document.getElementById(id).remove();
+  recalcTotals();
+}
+function collectOtherCosts(){
+  const list = [];
+  document.querySelectorAll('#otherCostsBody tr').forEach(tr=>{
+    const label = tr.querySelector('.oc-label').value;
+    const amount = tr.querySelector('.oc-amount').value;
+    if(label || amount) list.push({label, amount});
+  });
+  return list;
+}
+function fillOtherCosts(list){
+  document.getElementById('otherCostsBody').innerHTML = '';
+  (list||[]).forEach(oc=>addOtherCostRow(oc));
 }
 
 /* ---------------- MASTERS: SUPPLIER / DELIVERY PICKERS ---------------- */
@@ -1441,6 +1506,7 @@ function collectForm(){
     companyTelephone: document.getElementById('companyTelephone').value,
     modeShipment: document.getElementById('modeShipment').value,
     items,
+    otherCosts: collectOtherCosts(),
     grandTotal: total,
     linkedPurchaseReqs: Array.from(poSelectedPrs),
     deliveryLocation: document.getElementById('deliveryLocation').value,
@@ -1478,6 +1544,7 @@ function fillForm(d){
   document.getElementById('modeShipment').value = d.modeShipment||'Door to Door';
   (d.items||[]).forEach(it=>addItemRow(it));
   if(!d.items || d.items.length===0) addItemRow();
+  fillOtherCosts(d.otherCosts);
   poSelectedPrs = new Set(d.linkedPurchaseReqs||[]);
   renderPoPrPicker();
   document.getElementById('deliveryLocation').value = d.deliveryLocation||'';
@@ -1523,6 +1590,7 @@ function clearForm(silent){
   document.getElementById('deliveryContactPerson').value='';
   document.getElementById('deliveryContactNo').value='';
   document.getElementById('itemsBody').innerHTML='';
+  document.getElementById('otherCostsBody').innerHTML='';
   poSelectedPrs = new Set();
   poSelectedCs = new Set();
   if(!silent){
@@ -1970,6 +2038,10 @@ function renderPrintSheet(d){
       <td class="right">${(qty*rate).toLocaleString('en-BD')}</td>
     </tr>`;
   }).join('');
+  const otherCostRows = (d.otherCosts||[]).filter(oc=>oc.label||oc.amount).map(oc=>{
+    const amt = parseFloat(oc.amount)||0;
+    return `<tr><td colspan="6" class="right">${oc.label||''}</td><td class="right">${amt.toLocaleString('en-BD')}</td></tr>`;
+  }).join('');
   const html = `
   <div class="po-sheet" style="transform:scale(${(s.scalePct||100)/100});">
     <div class="letterhead-spacer" style="height:${s.topOffsetMm||0}mm;"></div>
@@ -2016,6 +2088,7 @@ function renderPrintSheet(d){
       <tr><th style="width:4%">SL</th><th style="width:12%">Item Code</th><th style="width:36%">Descriptions</th>
         <th style="width:8%">UOM</th><th style="width:8%">Sets</th><th style="width:14%">Rate Unit</th><th style="width:18%">Total Amount (${d.currency||'BDT'})</th></tr>
       ${itemsRows}
+      ${otherCostRows}
       <tr><td colspan="6" class="right bold">Total Taka</td><td class="right bold">${(d.grandTotal||0).toLocaleString('en-BD')}</td></tr>
       <tr><td colspan="6" class="right bold">Grand Total</td><td class="right bold">${(d.grandTotal||0).toLocaleString('en-BD')}</td></tr>
     </table>
@@ -2236,9 +2309,46 @@ function recalcRqTotals(){
     tr.querySelector('.rq-it-total').textContent = amt.toLocaleString('en-BD',{maximumFractionDigits:2});
     total += amt;
   });
+  document.querySelectorAll('#rqOtherCostsBody tr').forEach(tr=>{
+    const amt = parseFloat(tr.querySelector('.oc-amount').value) || 0;
+    total += amt;
+  });
   document.getElementById('rqTotalTaka').textContent = total.toLocaleString('en-BD',{maximumFractionDigits:2});
   document.getElementById('rqTotalWords').textContent = 'Total in words: ' + numToWords(total);
   return total;
+}
+
+/* ---- Other Cost rows (Payment Requisition) ---- */
+let rqOtherCostRowCounter = 0;
+function addRqOtherCostRow(prefill){
+  rqOtherCostRowCounter++;
+  const id = 'rqocrow'+rqOtherCostRowCounter;
+  const tr = document.createElement('tr');
+  tr.id = id;
+  tr.innerHTML = `
+    <td><input class="oc-label" value="${prefill?(prefill.label||''):''}" placeholder="e.g. Installation with Transport"></td>
+    <td><input class="oc-amount" type="number" step="any" value="${prefill?(prefill.amount||''):''}" oninput="recalcRqTotals()"></td>
+    <td><button class="small-btn danger" onclick="removeRqOtherCostRow('${id}')">✕</button></td>
+  `;
+  document.getElementById('rqOtherCostsBody').appendChild(tr);
+  recalcRqTotals();
+}
+function removeRqOtherCostRow(id){
+  document.getElementById(id).remove();
+  recalcRqTotals();
+}
+function collectRqOtherCosts(){
+  const list = [];
+  document.querySelectorAll('#rqOtherCostsBody tr').forEach(tr=>{
+    const label = tr.querySelector('.oc-label').value;
+    const amount = tr.querySelector('.oc-amount').value;
+    if(label || amount) list.push({label, amount});
+  });
+  return list;
+}
+function fillRqOtherCosts(list){
+  document.getElementById('rqOtherCostsBody').innerHTML = '';
+  (list||[]).forEach(oc=>addRqOtherCostRow(oc));
 }
 
 /* ---- Tax breakdown rows ---- */
@@ -2451,6 +2561,7 @@ function collectReqForm(){
     supplierName: document.getElementById('rq_supplierName').value,
     rateLabel: document.getElementById('rq_rateLabel').value || 'Rate/Ltr',
     items,
+    otherCosts: collectRqOtherCosts(),
     grandTotal: total,
     linkedPOs: Array.from(rqSelectedPOs),
     taxRows: collectRqTaxTable(),
@@ -2484,6 +2595,7 @@ function fillReqForm(d){
   document.getElementById('rqItemsBody').innerHTML = '';
   (d.items||[]).forEach(it=>addRqItemRow(it));
   if(!d.items || !d.items.length) addRqItemRow();
+  fillRqOtherCosts(d.otherCosts);
   rqSelectedPOs = new Set(d.linkedPOs||[]);
   renderReqPoPicker();
   renderRqTaxTable(d.taxRows);
@@ -2498,6 +2610,7 @@ function clearRqForm(silent){
   document.getElementById('rq_supplierPicker').value='';
   document.getElementById('rq_supplierName').value='';
   document.getElementById('rqItemsBody').innerHTML='';
+  document.getElementById('rqOtherCostsBody').innerHTML='';
   rqSelectedPOs = new Set();
   if(!silent){
     document.getElementById('rq_billDate').value = new Date().toISOString().slice(0,10);
@@ -2599,6 +2712,10 @@ function renderRequisitionPrintSheet(d){
       <td class="right">${(qty*rate).toLocaleString('en-BD')}</td>
     </tr>`;
   }).join('');
+  const otherCostRowsRq = (d.otherCosts||[]).filter(oc=>oc.label||oc.amount).map(oc=>{
+    const amt = parseFloat(oc.amount)||0;
+    return `<tr><td colspan="5" class="right">${oc.label||''}</td><td class="right">${amt.toLocaleString('en-BD')}</td></tr>`;
+  }).join('');
   const taxRowsArr = (d.taxRows && d.taxRows.length ? d.taxRows : defaultRqTaxRows());
   const taxRowsHtml = taxRowsArr.map((r,i)=>{
     return `<tr>
@@ -2640,6 +2757,7 @@ function renderRequisitionPrintSheet(d){
       <tr><th style="width:5%">SL</th><th style="width:16%">Item Code</th><th style="width:39%">Descriptions</th>
         <th style="width:10%">Qty</th><th style="width:14%">${d.rateLabel||'Rate/Ltr'}</th><th style="width:16%">Total Amount BDT</th></tr>
       ${itemsRows}
+      ${otherCostRowsRq}
       <tr><td colspan="5" class="right bold">Total taka</td><td class="right bold">${(d.grandTotal||0).toLocaleString('en-BD')}</td></tr>
     </table>
     <p style="font-size:12px; margin:8px 0 2px;"><b>Total Amount In Word:</b> ${numToWords(d.grandTotal||0)}</p>
@@ -3446,18 +3564,8 @@ function splitSignatoriesForPrint(sigs){
   const list = (sigs && sigs.length) ? sigs : [];
   if(list.length <= 4) return [list];
   const line1Count = Math.ceil(list.length/2);
-  const line2Count = list.length - line1Count;
   const line1 = list.slice(0, line1Count);
-  const line2Items = list.slice(line1Count);
-  const gap = line1Count - line2Count;
-  let line2 = line2Items.slice();
-  if(gap > 0){
-    // insert `gap` blank slots at the center of line2 so it reads as centered under line1
-    const centerIdx = Math.ceil(line2.length/2);
-    for(let i=0; i<gap; i++){
-      line2.splice(centerIdx, 0, null);
-    }
-  }
+  const line2 = list.slice(line1Count);
   return [line1, line2];
 }
 function sigBlockHtml(sig){
@@ -3847,9 +3955,14 @@ function renderCsPrintSheet(d){
 
   const sigs = (d.signatories && d.signatories.length) ? d.signatories : defaultCsSignatories();
   const sigLines = splitSignatoriesForPrint(sigs);
-  const sigRowsHtml = sigLines.map((line,i)=>
-    `<div class="sig-row" style="margin-top:${i===0 ? (s.sigSpaceMm||15) : 20}mm;">${line.map(sigBlockHtml).join('')}</div>`
-  ).join('');
+  const maxLineLen = Math.max.apply(null, sigLines.map(l=>l.length));
+  const sigRowsHtml = sigLines.map((line,i)=>{
+    const isShorter = line.length < maxLineLen;
+    const justify = isShorter ? 'center' : 'space-between';
+    const gap = isShorter ? '20px 56px' : '16px 12px';
+    const topMargin = i===0 ? (s.sigSpaceMm||15) : 28;
+    return `<div class="sig-row" style="margin-top:${topMargin}mm; justify-content:${justify}; gap:${gap};">${line.map(sigBlockHtml).join('')}</div>`;
+  }).join('');
   const recName = csRecommendedSupplierName(d);
   const html = `
   <div class="po-sheet" style="transform:scale(${(s.scalePct||100)/100}); width:auto; min-width:${orientation==='landscape'?'980px':'760px'};">
